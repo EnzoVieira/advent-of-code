@@ -20,6 +20,12 @@ const stacks = [
   stack9,
 ]
 
+// TESTS STACKS
+// const stack1 = ["Z", "N"]
+// const stack2 = ["M", "C", "D"]
+// const stack3 = ["P"]
+// const stacks = [stack1, stack2, stack3]
+
 const fsPromises = require("fs").promises
 
 async function parser() {
@@ -34,11 +40,14 @@ function parseIntruction(instruction) {
   const fromStackNum = instruction[3]
   const toStackNum = instruction[5]
 
-  for (let i = 0; i < quantity; i++) {
-    const fromStack = stacks[fromStackNum - 1]
-    const toStack = stacks[toStackNum - 1]
+  const fromStack = stacks[fromStackNum - 1]
+  const toStack = stacks[toStackNum - 1]
 
-    toStack(fromStack.pop())
+  const offset = fromStack.length - quantity
+  const cratesToTransport = fromStack.splice(offset)
+
+  for (let i = 0; i < quantity; i++) {
+    toStack.push(cratesToTransport.shift())
   }
 }
 
@@ -48,5 +57,6 @@ parser().then((response) => {
   input.map((instruction) => parseIntruction(instruction))
 
   const r = stacks.map((stack) => stack.pop())
+
   console.log(r.join())
 })
